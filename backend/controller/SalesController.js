@@ -232,6 +232,34 @@ async function deleteSales(req, res) {
     }
 }
 
+async function getIronBarScrape(req, res) {
+    try{
+        let quantity = 0;
+        const now = new Date();
+        const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        const sales = await Sales.find({ date: { $gte: firstDayOfMonth, $lte: lastDayOfMonth } }).populate('bills');
+        for (let sale of sales) {
+            for (let bill of sale.bills) {
+                quantity += bill.quantity;
+            }
+        }
+
+        const product = await Product.findOne({ name: { $regex: /^iron bar$/i } });
+        
+        if (!product) {
+            return res.status(400).json({ message: 'Please add Iron Bar' });
+        }
+
+        const scrapeIronBar = quantity - product.stock;
+        
+        return res.status(200).json({ scrapeIronBar });
+    } catch (error) {
+        console.error('Error retrieving sales:', error.message);
+        res.status(500).json({ message: 'Internal server error: ' + error.message });    
+    }
+}
+
 module.exports = {
     getAllSales,
     getSalesById,
@@ -240,4 +268,5 @@ module.exports = {
     deleteSales,
     getSalesByCustomer,
     getSalesBySupplier,
+    getIronBarScrape,
 };

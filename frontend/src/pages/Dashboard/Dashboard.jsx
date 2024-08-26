@@ -29,6 +29,9 @@ export const Dashboard = () => {
     rateDifference: 0,
   });
 
+  const [ironBarScrape, setIronBarScrape] = useState(0);
+  const [billetScrape, setBilletScrape] = useState(0);
+
   const { token } = useAuthProvider();
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const today = new Date();
@@ -81,6 +84,26 @@ export const Dashboard = () => {
       const rateResponse = rateData.data;
       console.log(rateResponse);
       setRateData(rateResponse);
+
+      const ironBarScrape = await axios.get(`${BASE_URL}sales/ironbarscrape`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(ironBarScrape.data);
+      setIronBarScrape(ironBarScrape.data.scrapeIronBar);
+
+      const billetScrape = await axios.get(`${BASE_URL}purchases/getbilletscrape`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(billetScrape.data);
+      setBilletScrape(billetScrape.data.scrapeBillet);
+
+
     } catch (error) {
       console.error("Error fetching report data:", error);
     }
@@ -169,6 +192,23 @@ export const Dashboard = () => {
           totalNumber={`PKR ${rateData?.rateDifference}`}
           bgColor={rateData.rateDifference >= 0 ? "#4CAF50" : "#FF6F61"}
         />
+      </SimpleGrid>
+
+      <SimpleGrid columns={[1, null, 3]} spacing={10} mt={5}>
+        <InfoCard
+          title="Total Iron Scrap"
+          totalNumber={`${ironBarScrape}`}
+          bgColor="#FF6F61"
+
+        />
+
+        <InfoCard
+          title="Total Billet Scrap"
+          totalNumber={`${billetScrape}`}
+          bgColor="#FF6F61"
+
+        />
+
       </SimpleGrid>
     </Box>
   );

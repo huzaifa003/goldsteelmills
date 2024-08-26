@@ -3,6 +3,7 @@ const Supplier = require('../models/Supplier');
 const Bill = require('../models/Bill');
 const Item = require('../models/Item');
 const mongoose = require('mongoose');
+const Product = require('../models/Product');
 
 // Get all purchases with optional date filtering
 async function getAllPurchases(req, res) {
@@ -156,7 +157,32 @@ async function createPurchase(req, res) {
     }
 }
 
+const getScrapeOfBillet = async (req, res) => {
+    try{ 
 
+        let qty = 0;
+        const purchases = await Purchase.find({}).populate('bills');
+        for (const purchase of purchases) {
+            for (const bill of purchase.bills) {
+                qty += bill.quantity;
+            }
+        }
+
+        const product = await Product.findOne({ name: { $regex: /^billet$/i } });
+        if (!product) {
+            return res.status(400).json({ message: 'Please add Billet' });
+        }
+
+        const scrapeBillet = qty - product.stock;
+
+        return res.status(200).json({ scrapeBillet });
+
+    }catch(error){
+        console.error('Error retrieving sales:', error.message);
+        res.status(500).json({ message: 'Internal server error: ' + error.message });
+
+    }
+}
 
 
 // Update a purchase by ID
@@ -261,5 +287,6 @@ module.exports = {
     createPurchase,
     updatePurchase,
     deletePurchase,
-    getPurchaseBySupplier
+    getPurchaseBySupplier,
+    getScrapeOfBillet,
 };
