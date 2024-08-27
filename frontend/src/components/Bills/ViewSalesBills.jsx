@@ -73,10 +73,10 @@ const ViewSalesBills = () => {
       const salesData = response.data;
 
       // Filter the data for the selected supplier
-      const relevantSales = salesData.filter(sale => sale.supplier && sale.supplier._id === supplier_id);
+      const matchingSales = salesData.filter(sale => sale.supplier && sale.supplier._id === supplier_id);
 
-      if (relevantSales.length > 0) {
-        const lastSale = relevantSales[relevantSales.length - 1];
+      if (matchingSales.length > 0) {
+        const lastSale = matchingSales[matchingSales.length - 1];
         setAdvancePayment(lastSale.supplier?.advance || 0);
         setPreviousBalance(lastSale.supplier?.balance || 0);
 
