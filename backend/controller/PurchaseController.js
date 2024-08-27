@@ -247,8 +247,9 @@ async function deletePurchase(req, res) {
 const getPurchaseBySupplier = async (req, res) => {
     try {
         const { supplierId } = req.params;
-
+        // console.log(supplierId);
         const purchases = await Purchase.find({ supplier: supplierId }).populate('supplier').populate('bills');
+        // console.log(purchases);
         res.status(200).json(purchases);
     } catch (error) {
         console.error('Error retrieving purchases:', error.message);

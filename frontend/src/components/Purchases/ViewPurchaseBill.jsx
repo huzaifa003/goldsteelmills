@@ -31,7 +31,7 @@ import { BASE_URL } from "../../utils";
 import { useAuthProvider } from "../../hooks/useAuthProvider";
 
 const ViewPurchaseBill = () => {
-  const [rows, setRows] = useState([{ id: 1, items: [{ id: 1 }] }]);
+  const [rows, setRows] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState("");
   const [advancePayment, setAdvancePayment] = useState(0);
@@ -39,6 +39,7 @@ const ViewPurchaseBill = () => {
   const [items, setItems] = useState([]);
   const [unloading, setUnloading] = useState(0);
 
+  const [incrementalId, setIncrementalId] = useState(1);
   const componentRef = useRef();
   const toast = useToast();
   const { token } = useAuthProvider();
@@ -74,11 +75,9 @@ const ViewPurchaseBill = () => {
     fetchItems();
   }, [token]);
 
-  //selected id is sent here
   const handleSupplierChange = async (event) => {
     const supplier_id = event.target.value;
     setSelectedSupplier(supplier_id);
-    console.log(selectedSupplier);
     
     try {
       const response = await axios.get(`${BASE_URL}purchases/supplier/${supplier_id}`, {
@@ -91,10 +90,9 @@ const ViewPurchaseBill = () => {
       setAdvancePayment(supplierData.advance || 0);
       setPreviousBalance(supplierData.balance || 0);
 
-    //adds data to rows
-      const purchaseRows = supplierData.bills?.map((bill, index) => ({
+      const purchaseRows = supplierData.map((bill, index) => ({
         id: index + 1,
-        items: bill.items.map((item, itemIndex) => ({
+        items: bill.bills.map((item, itemIndex) => ({
           id: itemIndex + 1,
           billNumber: item.bill_no,
           gatePassNumber: item.gatePassNo,
@@ -105,6 +103,7 @@ const ViewPurchaseBill = () => {
           price: item.rate,
         })),
       }));
+
       setRows(purchaseRows);
       setUnloading(supplierData.unloading || 0);
     } catch (error) {
@@ -121,11 +120,11 @@ const ViewPurchaseBill = () => {
 
   const calculateBill = () => {
     let total = 0;
-    rows?.forEach((row) => {
-      row.items?.forEach((item) => {
+    rows.forEach((row) => {
+      row.items.forEach((item) => {
         const quantity = parseFloat(item.quantity) || 0;
         const price = parseFloat(item.price) || 0;
-        total += quantity * price;
+        total += (quantity - item.kaat) * price;
       });
     });
     total -= advancePayment;
@@ -159,7 +158,7 @@ const ViewPurchaseBill = () => {
           border: 1px solid black;
         }
         .print-table th {
-          background-color: #4A5568; /* Adjust for visibility */
+          background-color: #4A5568;
           color: white;
         }
       }
@@ -221,11 +220,11 @@ const ViewPurchaseBill = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {rows?.map((row, rowIndex) => (
+            {rows.map((row, rowIndex) => (
               <React.Fragment key={row.id}>
-                {row.items.map((item, itemIndex) => (
+                {row.items?.map((item, itemIndex) => (
                   <Tr key={item.id}>
-                    <Td>{itemIndex === 0 ? row.id : ""}</Td>
+                    <Td>{rowIndex + 1 + "." + (itemIndex + 1)}</Td>
                     <Td>
                       <Tooltip label="Bill Number">
                         <Input
@@ -307,7 +306,7 @@ const ViewPurchaseBill = () => {
                         />
                       </Tooltip>
                     </Td>
-                    <Td>{((item.quantity - item.kaat) * (item.price || 0)).toFixed(2)}</Td>
+                    <Td>{((item.quantity - (item.kaat ||  0)) * (item.price || 0)).toFixed(2)}</Td>
                   </Tr>
                 ))}
               </React.Fragment>
