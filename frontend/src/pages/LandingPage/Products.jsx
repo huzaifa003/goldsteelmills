@@ -9,12 +9,12 @@ import {
 } from "@chakra-ui/react";
 
 const products = [
-  { name: "Angle", image: "../../../public/c4.jpg" },
-  { name: "T-Iron Bars", image: "../../../public/c5.jpg" },
-  { name: "Patti", image: "../../../public/c6.jpg" },
-  { name: "Steel Bars", image: "../../../public/c7.jpg" },
-  { name: "Steel Billet", image: "../../../public/c8.jpg" },
-  { name: "Steel Rods", image: "../../../public/c9.jpg" },
+  { name: "Angle", image: "/images/c4.jpg" },
+  { name: "T-Iron Bars", image: "/images/c5.jpg" },
+  { name: "Patti", image: "/images/c6.jpg" },
+  { name: "Steel Bars", image: "/images/c7.jpg" },
+  { name: "Steel Billet", image: "/images/c8.jpg" },
+  { name: "Steel Rods", image: "/images/c9.jpg" },
 ];
 
 const OurProducts = () => {

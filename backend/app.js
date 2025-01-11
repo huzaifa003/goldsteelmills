@@ -9,7 +9,11 @@ const connectDB = require('./config/db');
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*',  // Allows all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 
 app.use(bodyparser.json());

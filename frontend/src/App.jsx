@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RootLayout } from "./pages/RootLayout.jsx";
 import { Suppliers } from "./pages/supplier/Suppliers.jsx";
-import { Dashboard } from "./pages/Dashboard/Dashboard.jsx";
+import DashboardTabs from "./pages/Dashboard/DashboardTabs.jsx";
 import { SupplierEdit } from "./pages/supplier/Edit.jsx";
 import { AuthLayout } from "./pages/AuthLayout.jsx";
 import { LoginPage } from "./pages/Auth/LoginPage.jsx";
@@ -9,24 +9,25 @@ import { AuthProvider } from "./services/AuthProvider.jsx";
 import { PurchaseEdit } from "./pages/purchase/Edit.jsx";
 import BillComponent from "./pages/Bills/BillComponent.jsx";
 import ExpenseTracking from "./pages/Expenses/ExpenseTracking.jsx";
-import SuppliesLoadingForm from "./pages/WGS-Supplies/SuppliesLoadingForm.jsx";
-import LandingPageLayout from "./pages/LandingPageLayout.jsx";
 import { Production } from "./pages/Production/Production.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
-import DashboardTabs from "./pages/Dashboard/DashboardTabs.jsx";
 import Purchases from "./pages/purchase/Purchases.jsx";
 import SupplierLedger from "./pages/supplier/SupplierLedger.jsx";
-
+import LandingPageLayout from "./pages/LandingPageLayout.jsx";
 
 const router = createBrowserRouter([
   {
-    path: "/landing",
+    path: "/",
     element: <LandingPageLayout />,
   },
   {
-    path: "/auth",
+    path: "auth",
     element: <AuthLayout />,
     children: [
+      {
+        index: true, // ✅ Loads LoginPage at "/auth"
+        element: <LoginPage />,
+      },
       {
         path: "login",
         element: <LoginPage />,
@@ -34,90 +35,44 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/",
-    element: <RootLayout />,
+    path: "admin",
+    element: <PrivateRoute><RootLayout /></PrivateRoute>, // ✅ Apply auth to the entire "admin" section
     children: [
       {
-        path: "/",
-        element: (
-          <PrivateRoute>
-            <DashboardTabs />
-          </PrivateRoute>
-        ),
+        index: true, // ✅ Loads DashboardTabs by default for "/admin"
+        element: <DashboardTabs />,
       },
       {
-        path: "/suppliers",
-        element: (
-          <PrivateRoute>
-            <Suppliers />
-          </PrivateRoute>
-        ),
-      },
-
-      {
-        path: "/suppliers/ledger",
-        element: (
-          <PrivateRoute>
-            <SupplierLedger />
-          </PrivateRoute>
-        ),
-      },
-
-      {
-        path: "/production",
-        element: (
-          <PrivateRoute>
-            <Production />
-          </PrivateRoute>
-        ),
+        path: "suppliers",
+        element: <Suppliers />,
       },
       {
-        path: "/bills",
-        element: (
-          <PrivateRoute>
-            <BillComponent />
-          </PrivateRoute>
-        ),
+        path: "suppliers/ledger",
+        element: <SupplierLedger />,
       },
       {
-        path: "/expenses",
-        element: (
-          <PrivateRoute>
-            <ExpenseTracking />
-          </PrivateRoute>
-        ),
-      },
-      // {
-      //   path: "/supplies",
-      //   element: (
-      //     <PrivateRoute>
-      //       <SuppliesLoadingForm />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      {
-        path: "/purchases",
-        element: (
-          <PrivateRoute>
-            <Purchases />
-          </PrivateRoute>
-        ),
+        path: "production",
+        element: <Production />,
       },
       {
-        path: "/supplier/edit",
-        element: (
-          <PrivateRoute>
-            <SupplierEdit />
-          </PrivateRoute>
-        ),
+        path: "bills",
+        element: <BillComponent />,
       },
       {
-        path: "/purchase/edit",
-        element: (
-          <PrivateRoute>
-            <PurchaseEdit />
-          </PrivateRoute>
-        ),
+        path: "expenses",
+        element: <ExpenseTracking />,
+      },
+      {
+        path: "purchases",
+        element: <Purchases />,
+      },
+      {
+        path: "supplier/edit",
+        element: <SupplierEdit />,
+      },
+      {
+        path: "purchase/edit",
+        element: <PurchaseEdit />,
       },
     ],
   },
@@ -136,4 +91,3 @@ function App() {
 }
 
 export default App;
-

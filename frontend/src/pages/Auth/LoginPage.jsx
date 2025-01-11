@@ -54,7 +54,7 @@ export const LoginPage = () => {
         duration: 3000,
         isClosable: true,
       });
-      navigate("/"); // Navigate to dashboard
+      navigate("/admin"); // Navigate to dashboard
     } catch (e) {
       setError(e.response.data.error);
       toast({

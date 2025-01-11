@@ -11,34 +11,34 @@ export const routes = [
   {
     name: "Home",
     icon: FaHome,
-    routeURL: "/",
+    routeURL: "/admin",
   },
   {
     name: "Suppliers",
     icon: FaTruck,
-    routeURL: "/suppliers",
+    routeURL: "/admin/suppliers",
   },
   {
     name: "Purchases",
     icon: FaMoneyCheckAlt,
-    routeURL: "/purchases",
+    routeURL: "/admin/purchases",
   },
   {
     name: 'Production',
     icon: FaShoppingCart,
-    routeURL: '/production'
+    routeURL: '/admin/production'
   },
   {
     name: "Sales Invoices",
     icon: FaFileInvoiceDollar,
-    routeURL: "/bills",
+    routeURL: "/admin/bills",
   },
   {
     name: "Expense Tracker",
     icon: FaMoneyCheckAlt,
-    routeURL: "/expenses",
+    routeURL: "/admin/expenses",
   },
-  // {
+  //admin// {
   //   name: "Supplies Tracker",
   //   icon: FaMoneyCheckAlt,
   //   routeURL: "/supplies",
